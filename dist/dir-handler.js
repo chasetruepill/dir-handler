@@ -2,16 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs = require("fs");
 const path = require("path");
-function where() {
+function whereCalledFrom() {
     const _ = Error.prepareStackTrace;
     Error.prepareStackTrace = (_, stack) => stack;
-    const stack = new Error().stack.slice(1);
+    const stack = new Error().stack.slice(2);
     Error.prepareStackTrace = _;
     const caller = stack.find((c) => c.getFileName() !== null);
     return path.dirname(caller.getFileName());
 }
-exports.where = where;
-const dirHandler = (dir) => (handler) => {
+exports.default = (handler) => {
+    const dir = whereCalledFrom();
     const files = fs.readdirSync(dir);
     const actionable = files.filter((filename) => {
         const lowered = filename.toLowerCase();
@@ -23,5 +23,4 @@ const dirHandler = (dir) => (handler) => {
         return Object.assign(Object.assign({}, forExport), e);
     }, {});
 };
-exports.dirHandler = dirHandler;
 //# sourceMappingURL=dir-handler.js.map
